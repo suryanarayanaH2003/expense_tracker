@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Overview - Income & Expenses</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --background-color: #ecf0f1;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            margin: 0;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            color: white;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .chart-container:hover {
+            transform: translateY(-5px);
+        }
+
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card i {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .stat-card .value {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .stat-card .label {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 24px;
+            background: white;
+            color: var(--primary-color);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            margin-top: 20px;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+        }
+
+        .back-btn i {
+            margin-right: 8px;
+        }
+
+        .savings-tip {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            color: white;
+            margin-top: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .savings-tip i {
+            color: var(--success-color);
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="header">
+            <h1><i class="fas fa-chart-pie"></i> Financial Overview</h1>
+            <p>Track your income and expenses to make informed financial decisions</p>
+        </div>
+
+        <div class="summary-stats">
+            <div class="stat-card">
+                <i class="fas fa-arrow-up" style="color: var(--success-color)"></i>
+                <div class="value">₹{{ total_income }}</div>
+                <div class="label">Total Income</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-arrow-down" style="color: var(--danger-color)"></i>
+                <div class="value">₹{{ total_expenses }}</div>
+                <div class="label">Total Expenses</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-percentage" style="color: var(--secondary-color)"></i>
+                <div class="value">{{ expense_percentage }}%</div>
+                <div class="label">Expense Ratio</div>
+            </div>
+        </div>
+
+        <div class="charts-grid">
+            <div class="chart-container">
+                <h2>Income vs Expenses</h2>
+                <canvas id="overviewChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h2>Monthly Trend</h2>
+                <canvas id="trendChart"></canvas>
+            </div>
+        </div>
+
+        <div class="savings-tip">
+            <i class="fas fa-lightbulb"></i>
+            <strong>Savings Tip:</strong> 
+            {% if expense_percentage > 70 %}
+                Consider reducing expenses in top spending categories to improve your savings ratio.
+            {% elif expense_percentage > 50 %}
+                You're doing well! Try to maintain expenses below 70% of your income for better savings.
+            {% else %}
+                Excellent job! You're maintaining a healthy savings ratio.
+            {% endif %}
+        </div>
+
+        <a href="/dashboard" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+
+    <script>
+        // Existing pie chart code
+        const labels = JSON.parse('{{ labels | tojson | safe }}');
+        const data = JSON.parse('{{ data | tojson | safe }}');
+
+        const expenseColors = [
+            '#e74c3c', '#e84393', '#f1c40f', '#3498db', '#9b59b6',
+            '#fd79a8', '#fdcb6e', '#00cec9', '#e17055', '#6c5ce7'
+        ];
+
+        const colors = ['#2ecc71'];
+        for (let i = 1; i < labels.length; i++) {
+            colors.push(expenseColors[(i - 1) % expenseColors.length]);
+        }
+
+        // Pie Chart
+        const ctx = document.getElementById('overviewChart').getContext('2d');
+        const overviewChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: colors,
+                    borderWidth: 2,
+                    borderColor: 'white'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20
+                        }
+                    }
+                },
+                cutout: '60%'
+            }
+        });
+
+        // Monthly Trend Chart with real data
+        const monthlyLabels = JSON.parse('{{ monthly_labels | tojson | safe }}');
+        const monthlyIncome = JSON.parse('{{ monthly_income | tojson | safe }}');
+        const monthlyExpenses = JSON.parse('{{ monthly_expenses | tojson | safe }}');
+
+        const trendCtx = document.getElementById('trendChart').getContext('2d');
+        new Chart(trendCtx, {
+            type: 'line',
+            data: {
+                labels: monthlyLabels,
+                datasets: [{
+                    label: 'Income',
+                    data: monthlyIncome,
+                    borderColor: '#2ecc71',
+                    tension: 0.4,
+                    fill: false
+                }, {
+                    label: 'Expenses',
+                    data: monthlyExpenses,
+                    borderColor: '#e74c3c',
+                    tension: 0.4,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.dataset.label}: ₹${context.parsed.y}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '₹' + value;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

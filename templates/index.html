@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker - Manage Your Finances</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #2ecc71;
+            --text-color: #2c3e50;
+            --background-color: #ecf0f1;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            min-height: 100vh;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .navbar {
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 10px 25px;
+            border-radius: 25px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: white;
+            color: var(--primary-color);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: 80px auto;
+            padding: 0 20px;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+
+        .feature-card i {
+            font-size: 40px;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 15px;
+        }
+
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .shape {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+        }
+
+        .shape:nth-child(1) { width: 200px; height: 200px; top: 10%; left: 10%; }
+        .shape:nth-child(2) { width: 150px; height: 150px; top: 60%; right: 15%; }
+        .shape:nth-child(3) { width: 100px; height: 100px; bottom: 20%; left: 20%; }
+
+        /* New Sections Styles */
+        .how-it-works {
+            background: white;
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-bottom: 50px;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .step-card {
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .step-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .step-number {
+            background: var(--secondary-color);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-weight: bold;
+        }
+
+        .testimonials {
+            background: var(--background-color);
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .testimonial-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+
+        .testimonial-author {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        footer {
+            background: var(--primary-color);
+            color: white;
+            padding: 50px 20px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-section a {
+            color: white;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            opacity: 1;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-links a {
+            font-size: 20px;
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            .navbar {
+                padding: 20px;
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <div class="floating-shapes">
+            <div class="shape"></div>
+            <div class="shape"></div>
+            <div class="shape"></div>
+        </div>
+        <nav class="navbar" style="background: rgba(44, 62, 80, 0.85); border-radius: 0 0 2px 20px; box-shadow: 0 4px 20px rgba(44,62,80,0.10); z-index: 2; position: relative;">
+            <div class="logo" style="display: flex; align-items: center; gap: 20px;">
+                <i class="fas fa-wallet" style="color: var(--secondary-color); font-size: 28px;"></i>
+                <span style="color: white;">Expense Tracker</span>
+            </div>
+            <div class="nav-buttons">
+                <a href="/login">
+                    <button class="btn btn-outline" style="border-color: var(--secondary-color); color: white; background: transparent;">
+                        Login
+                    </button>
+                </a>
+                <a href="/signup">
+                    <button class="btn btn-primary" style="background: var(--secondary-color); color: white;">
+                        Sign Up
+                    </button>
+                </a>
+            </div>
+        </nav>
+
+        <div class="hero-content">
+            <h1 class="hero-title">Take Control of Your Finances</h1>
+            <p class="hero-subtitle">Track expenses, manage budgets, and achieve your financial goals with our intuitive expense tracking solution.</p>
+            
+            <div class="features">
+                <div class="feature-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Track Expenses</h3>
+                    <p>Monitor your spending patterns and track every expense in real-time</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-piggy-bank"></i>
+                    <h3>Save Money</h3>
+                    <p>Set budgets and savings goals to improve your financial health</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-chart-pie"></i>
+                    <h3>Visual Insights</h3>
+                    <p>Get detailed reports and visualizations of your spending habits</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="how-it-works">
+        <h2 class="section-title">How It Works</h2>
+        <div class="steps">
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <h3>Sign Up</h3>
+                <p>Create your free account in seconds</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <h3>Add Transactions</h3>
+                <p>Record your income and expenses easily</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <h3>Track Progress</h3>
+                <p>Monitor your financial growth</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="testimonials">
+        <h2 class="section-title">What Our Users Say</h2>
+        <div class="testimonial-grid">
+            <div class="testimonial-card">
+                <p class="testimonial-text">"This app has completely transformed how I manage my finances. It's intuitive and easy to use!"</p>
+                <p class="testimonial-author">- Sarah Johnson</p>
+            </div>
+            <div class="testimonial-card">
+                <p class="testimonial-text">"The visual insights helped me identify unnecessary expenses and save more money."</p>
+                <p class="testimonial-author">- Michael Chen</p>
+            </div>
+            <div class="testimonial-card">
+                <p class="testimonial-text">"Perfect for tracking both personal and business expenses. Highly recommended!"</p>
+                <p class="testimonial-author">- Emma Davis</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About Us</h3>
+                <p>We help you take control of your finances with our simple and effective expense tracking solution.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="/features">Features</a></li>
+                    <li><a href="/pricing">Pricing</a></li>
+                    <li><a href="/blog">Blog</a></li>
+                    <li><a href="/support">Support</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <ul>
+                    <li><i class="fas fa-envelope"></i> support@expensetracker.com</li>
+                    <li><i class="fas fa-phone"></i> +1 (555) 123-4567</li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Connect With Us</h3>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2025 Expense Tracker. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

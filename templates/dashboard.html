@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Dashboard - Expense Tracker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --background-color: #ecf0f1;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 25px;
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 28px;
+        }
+
+        .profile-section {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .profile-btn, .logout-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 25px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .profile-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .logout-btn {
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+
+        .logout-btn:hover {
+            background: rgba(231, 76, 60, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .profile-btn i, .logout-btn i {
+            font-size: 16px;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 20px auto;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card i {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .stat-card .label {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .stat-card .value {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .form-container {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            align-items: end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .form-group label {
+            font-size: 14px;
+            color: #666;
+        }
+
+        input, select {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+        }
+
+        button {
+            padding: 12px 24px;
+            background: var(--success-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #27ae60;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 20px;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--primary-color);
+            border-bottom: 2px solid #ddd;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .income-text {
+            color: var(--success-color);
+            font-weight: 600;
+        }
+
+        .expense-text {
+            color: var(--danger-color);
+            font-weight: 600;
+        }
+
+        .overview-btn {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .overview-btn button {
+            background: var(--secondary-color);
+            padding: 12px 30px;
+            font-size: 16px;
+        }
+
+        .overview-btn button:hover {
+            background: #2980b9;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .action-buttons {
+            white-space: nowrap;
+        }
+
+        .btn-edit, .btn-delete {
+            padding: 8px;
+            margin: 0 3px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-edit {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-delete {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .btn-edit:hover, .btn-delete:hover {
+            transform: translateY(-2px);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 10px;
+            font-size: 28px;
+            cursor: pointer;
+        }
+
+        .btn-update {
+            background: var(--secondary-color);
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        #profileModal {
+            display: none;
+        }
+        .profile-modal-content {
+            max-width: 900px;
+            margin: 10% auto;
+            padding: 50px 32px;
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 35px;
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        .profile-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(to right, var(--secondary-color), var(--success-color));
+            border-radius: 3px;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: white;
+            font-size: 40px;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.2);
+        }
+
+        /* Center profile form fields in two rows with two columns, equal spacing */
+        .profile-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px 32px;
+            justify-items: center;
+            align-items: center;
+        }
+
+        .profile-form .form-group {
+            width: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .profile-form label {
+            display: block;
+            margin-bottom: 4px;
+            color: var(--primary-color);
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .profile-form input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            margin-bottom: 0;
+        }
+
+        .profile-form input:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .password-toggle {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .password-toggle input {
+            padding-right: 40px;
+        }
+
+        /* Make Save button span both columns and center it */
+        .profile-form .btn-update {
+            grid-column: 1 / span 2;
+            justify-self: center;
+            width: 60%;
+        }
+
+        /* Field info text spans both columns if needed */
+        .profile-form .field-info {
+            grid-column: 1 / span 2;
+            text-align: center;
+        }
+
+        .password-toggle i {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #666;
+            transition: color 0.3s ease;
+        }
+
+        .password-toggle i:hover {
+            color: var(--secondary-color);
+        }
+
+        .profile-form .btn-update {
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .profile-form .btn-update:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .profile-form .field-info {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-wallet"></i> Expense Tracker
+            </div>
+            <div class="profile-section">
+                <button onclick="showProfileModal()" class="profile-btn">
+                    <i class="fas fa-user-circle"></i>
+                    <span>{{ username }}</span>
+                </button>
+                <button onclick="logout()" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="stats-container">
+        <div class="stat-card">
+            <i class="fas fa-arrow-circle-up" style="color: var(--success-color)"></i>
+            <div class="label">Total Income</div>
+            <div class="value">₹{{ total_income }}</div>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-arrow-circle-down" style="color: var(--danger-color)"></i>
+            <div class="label">Total Expenses</div>
+            <div class="value">₹{{ total_expense }}</div>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-balance-scale" style="color: var(--secondary-color)"></i>
+            <div class="label">Balance</div>
+            <div class="value">₹{{ balance }}</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="form-container">
+            <h2 style="margin-top: 0;">Add New Transaction</h2>
+            <form id="transaction-form" method="POST">
+                <div class="form-group">
+                    <label>Description</label>
+                    <input type="text" name="description" placeholder="Enter description" required />
+                </div>
+                <div class="form-group">
+                    <label>Amount</label>
+                    <input type="number" name="amount" placeholder="Enter amount" required />
+                </div>
+                <div class="form-group">
+                    <label>Type</label>
+                    <select name="type">
+                        <option value="income">Income</option>
+                        <option value="expense">Expense</option>
+                    </select>
+                </div>
+                <button type="submit">
+                    <i class="fas fa-plus"></i> Add Transaction
+                </button>
+            </form>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Type</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in expenses %}
+                <tr>
+                    <td>{{ item.description }}</td>
+                    <td>₹{{ item.amount }}</td>
+                    <td class="{{ 'income-text' if item.type == 'income' else 'expense-text' }}">
+                        <i class="fas fa-{{ 'arrow-up' if item.type == 'income' else 'arrow-down' }}"></i>
+                        {{ item.type }}
+                    </td>
+                    <td>{{ item.date.strftime('%Y-%m-%d %H:%M') }}</td>
+                    <td class="action-buttons">
+                        <button onclick="editTransaction('{{ item._id }}')" class="btn-edit">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button onclick="deleteTransaction('{{ item._id }}')" class="btn-delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="overview-btn">
+        <a href="/overview">
+            <button>
+                <i class="fas fa-chart-pie"></i> View Overview
+            </button>
+        </a>
+    </div>
+
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Edit Transaction</h2>
+            <form id="editForm" method="POST">
+                <input type="hidden" id="editTransactionId" name="transaction_id">
+                <div class="form-group">
+                    <label>Description</label>
+                    <input type="text" id="editDescription" name="description" required>
+                </div>
+                <div class="form-group">
+                    <label>Amount</label>
+                    <input type="number" id="editAmount" name="amount" required>
+                </div>
+                <div class="form-group">
+                    <label>Type</label>
+                    <select id="editType" name="type">
+                        <option value="income">Income</option>
+                        <option value="expense">Expense</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-update">Update Transaction</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="profileModal" class="modal">
+        <div class="modal-content profile-modal-content">
+            <span class="close" onclick="closeProfileModal()">
+                <i class="fas fa-times"></i>
+            </span>
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h2>Profile Settings</h2>
+            </div>
+            <form id="profileForm" class="profile-form" onsubmit="updateProfile(event)">
+                <div class="form-group">
+                    <label for="profileUsername">
+                        <i class="fas fa-user"></i> Username
+                    </label>
+                    <input 
+                        type="text" 
+                        id="profileUsername" 
+                        name="username" 
+                        value="{{ username }}" 
+                        required
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label for="profileEmail">
+                        <i class="fas fa-envelope"></i> Email Address
+                    </label>
+                    <input 
+                        type="email" 
+                        id="profileEmail" 
+                        name="email" 
+                        value="{{ email }}" 
+                        required
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label for="profilePhone">
+                        <i class="fas fa-phone"></i> Phone Number
+                    </label>
+                    <input 
+                        type="tel" 
+                        id="profilePhone" 
+                        name="phone" 
+                        value="{{ phone }}" 
+                        required
+                        pattern="[0-9]{10}"
+                    >
+                    <div class="field-info">Enter 10-digit phone number</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="profilePassword">
+                        <i class="fas fa-lock"></i> New Password
+                    </label>
+                    <div class="password-toggle">
+                        <input 
+                            type="password" 
+                            id="profilePassword" 
+                            name="password"
+                            placeholder="Leave blank to keep current password"
+                        >
+                        <i class="fas fa-eye" onclick="togglePassword('profilePassword')"></i>
+                    </div>
+                    <div class="field-info">Minimum 8 characters with numbers and letters</div>
+                </div>
+                
+                <button type="submit" class="btn-update">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById('editModal');
+        const span = document.getElementsByClassName('close')[0];
+
+        function editTransaction(transactionId) {
+            fetch(`/get_transaction/${transactionId}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('editTransactionId').value = transactionId;
+                    document.getElementById('editDescription').value = data.description;
+                    document.getElementById('editAmount').value = data.amount;
+                    document.getElementById('editType').value = data.type;
+                    modal.style.display = 'block';
+                });
+        }
+
+        function deleteTransaction(transactionId) {
+            if (confirm('Are you sure you want to delete this transaction?')) {
+                fetch(`/delete_transaction/${transactionId}`, {
+                    method: 'DELETE',
+                }).then(() => {
+                    window.location.reload();
+                });
+            }
+        }
+
+        span.onclick = function() {
+            modal.style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        document.getElementById('editForm').onsubmit = function(e) {
+            e.preventDefault();
+            const transactionId = document.getElementById('editTransactionId').value;
+            const formData = new FormData(e.target);
+            
+            fetch(`/update_transaction/${transactionId}`, {
+                method: 'POST',
+                body: formData
+            }).then(() => {
+                window.location.reload();
+            });
+        }
+
+        function showProfileModal() {
+            document.getElementById('profileModal').style.display = 'block';
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profileModal').style.display = 'none';
+        }
+
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = input.nextElementSibling;
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        function updateProfile(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            
+            fetch('/update_profile', {
+                method: 'POST',
+                body: formData
+            }).then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Profile updated successfully!');
+                    closeProfileModal();
+                    window.location.reload();
+                } else {
+                    alert(data.message);
+                }
+            });
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                window.location.href = '/';
+            }
+        }
+    </script>
+</body>
+</html>
